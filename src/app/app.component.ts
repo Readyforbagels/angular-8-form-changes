@@ -24,11 +24,15 @@ export class AppComponent implements OnInit {
       footerUrl: new FormControl(""),
       footerColor: new FormControl(""),
       sections: new FormArray([this.initSection()])
-    });
+    }, {updateOn: "blur"});
 
-    this.survey.valueChanges.subscribe(change => {
-      console.log(change.sections[0]);
+    this.survey.valueChanges.subscribe((changes) => {
+      console.log(changes.sections[0], changes);
     });
+    setTimeout(() => {
+      this.survey.controls.surveyName.setValue("Algo");
+      this.survey.updateValueAndValidity();
+    }, 5000)
   }
 
   initSection() {
@@ -36,7 +40,7 @@ export class AppComponent implements OnInit {
       sectionTitle: [""],
       sectionDescription: new FormControl(""),
       questions: new FormArray([this.initQuestion()])
-    }, {updateOn: "blur"});
+    });
   }
   initQuestion() {
     return new FormGroup({

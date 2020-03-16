@@ -6,6 +6,7 @@ import {
   Validators,
   FormBuilder
 } from "@angular/forms";
+import { filter } from "rxjs/operators"
 @Component({
   selector: "my-app",
   templateUrl: "./app.component.html",
@@ -13,9 +14,11 @@ import {
 })
 export class AppComponent implements OnInit {
   survey: FormGroup;
+  pausarForm: boolean;
   constructor() {}
 
   ngOnInit() {
+    this.pausarForm = true;
     this.survey = new FormGroup({
       surveyName: new FormControl(""),
       logoUrl: new FormControl(""),
@@ -26,12 +29,14 @@ export class AppComponent implements OnInit {
       sections: new FormArray([this.initSection()])
     }, {updateOn: "blur"});
 
-    this.survey.valueChanges.subscribe((changes) => {
+    this.survey.valueChanges.pipe(filter(() => !this.pausarForm)).subscribe((changes) => {
       console.log(changes.sections[0], changes);
     });
     setTimeout(() => {
       this.survey.controls.surveyName.setValue("Algo");
       this.survey.updateValueAndValidity();
+      this.survey.addControl("Algo", new FormControl())
+      this.pausarForm = false;
     }, 5000)
   }
 

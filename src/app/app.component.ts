@@ -29,14 +29,14 @@ export class AppComponent implements OnInit {
       sections: new FormArray([this.initSection()])
     }, {updateOn: "blur"});
 
-    this.survey.valueChanges.pipe(filter(() => !this.pausarForm)).subscribe((changes) => {
+    this.survey.valueChanges.pipe(filter(() => !this.pausarForm), take).subscribe((changes) => {
       console.log(changes.sections[0], changes);
     });
     setTimeout(() => {
+      this.pausarForm = false;
       this.survey.controls.surveyName.setValue("Algo");
       this.survey.updateValueAndValidity();
       this.survey.addControl("Algo", new FormControl())
-      this.pausarForm = false;
     }, 5000)
   }
 
@@ -109,7 +109,7 @@ export class AppComponent implements OnInit {
 
   removeSection(i) {
     const control = <FormArray>this.survey.get("sections");
-    control.removeAt(i);
+    control.removeAt(i - 1);
   }
 
   removeOption(i, j, k) {

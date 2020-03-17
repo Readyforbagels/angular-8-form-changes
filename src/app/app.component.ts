@@ -15,21 +15,21 @@ import { filter } from "rxjs/operators"
 export class AppComponent implements OnInit {
   survey: FormGroup;
   pausarForm: boolean;
-  constructor() {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.pausarForm = true;
-    this.survey = new FormGroup({
-      surveyName: new FormControl(""),
-      logoUrl: new FormControl(""),
-      headerUrl: new FormControl(""),
-      headerColor: new FormControl(""),
-      footerUrl: new FormControl(""),
-      footerColor: new FormControl(""),
-      sections: new FormArray([this.initSection()])
+    this.survey = this.fb.group({
+      surveyName: [""],
+      logoUrl: [""],
+      headerUrl: [""],
+      headerColor: [""],
+      footerUrl: [""],
+      footerColor: [""],
+      sections: this.fb.array([ this.initSection() ])
     }, {updateOn: "blur"});
 
-    this.survey.valueChanges.pipe(filter(() => !this.pausarForm), take).subscribe((changes) => {
+    this.survey.valueChanges.pipe(filter(() => !this.pausarForm)).subscribe((changes) => {
       console.log(changes.sections[0], changes);
     });
     setTimeout(() => {
